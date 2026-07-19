@@ -1,0 +1,184 @@
+{
+  "name": "devguard-ai",
+  "displayName": "DevGuard AI — Code Health & Performance Guardian",
+  "description": "Offline-first static analysis for HTML/CSS/JS/React/Next.js/MERN projects: dead code, broken imports, duplicate code, React performance, accessibility, SEO, and security issues — with optional AI-powered error explanations and fix suggestions.",
+  "version": "0.1.1",
+  "publisher": "EmanfatimaDevguradAI",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Eman-fatima-web/Devguard-ai.git"
+  },
+  "homepage": "https://github.com/Eman-fatima-web/Devguard-ai",
+  "bugs": {
+    "url": "https://github.com/Eman-fatima-web/Devguard-ai/issues"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Linters",
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "react",
+    "nextjs",
+    "mern",
+    "dead code",
+    "unused css",
+    "accessibility",
+    "seo",
+    "security",
+    "ai",
+    "performance"
+  ],
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#0F1115",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "devguard.scanProject",
+        "title": "DevGuard AI: Scan Entire Project",
+        "icon": "$(search)"
+      },
+      {
+        "command": "devguard.scanCurrentFile",
+        "title": "DevGuard AI: Scan Current File",
+        "icon": "$(file-code)"
+      },
+      {
+        "command": "devguard.openDashboard",
+        "title": "DevGuard AI: Open Project Health Dashboard",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "devguard.explainError",
+        "title": "DevGuard AI: Explain This Error in Simple English"
+      },
+      {
+        "command": "devguard.suggestFix",
+        "title": "DevGuard AI: Suggest AI Fix"
+      },
+      {
+        "command": "devguard.generateDocs",
+        "title": "DevGuard AI: Generate Documentation for This File"
+      },
+      {
+        "command": "devguard.findUnusedFiles",
+        "title": "DevGuard AI: Find Unused CSS / JS / Images / Files"
+      },
+      {
+        "command": "devguard.findDuplicateCode",
+        "title": "DevGuard AI: Find Duplicate Code"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        { "command": "devguard.scanProject" },
+        { "command": "devguard.scanCurrentFile" },
+        { "command": "devguard.openDashboard" },
+        { "command": "devguard.explainError" },
+        { "command": "devguard.suggestFix" },
+        { "command": "devguard.generateDocs" },
+        { "command": "devguard.findUnusedFiles" },
+        { "command": "devguard.findDuplicateCode" }
+      ],
+      "editor/context": [
+        {
+          "command": "devguard.explainError",
+          "group": "devguard",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "devguard.generateDocs",
+          "group": "devguard"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "devguard-sidebar",
+          "title": "DevGuard AI",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "devguard-sidebar": [
+        {
+          "id": "devguard.healthView",
+          "name": "Project Health"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "DevGuard AI",
+      "properties": {
+        "devguard.ai.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable AI-powered features (error explanations, fix suggestions, doc generation). Requires an API key. All static analysis works fully offline without this."
+        },
+        "devguard.ai.provider": {
+          "type": "string",
+          "enum": ["anthropic", "openai", "none"],
+          "default": "none",
+          "description": "Which AI provider to use for optional AI features."
+        },
+        "devguard.ai.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Your own API key (BYO key). Never sent anywhere except directly to the provider you chose."
+        },
+        "devguard.analysis.ignorePatterns": {
+          "type": "array",
+          "default": ["node_modules", "dist", "build", ".next", "coverage"],
+          "description": "Folders to exclude from scans."
+        },
+        "devguard.analysis.duplicateThreshold": {
+          "type": "number",
+          "default": 6,
+          "description": "Minimum number of lines for a code block to be considered for duplicate detection."
+        },
+        "devguard.analysis.severity.unusedCode": { "type": "string", "enum": ["error", "warning", "information", "hint"], "default": "warning" },
+        "devguard.analysis.severity.brokenImports": { "type": "string", "enum": ["error", "warning", "information", "hint"], "default": "error" },
+        "devguard.analysis.severity.accessibility": { "type": "string", "enum": ["error", "warning", "information", "hint"], "default": "warning" },
+        "devguard.analysis.severity.security": { "type": "string", "enum": ["error", "warning", "information", "hint"], "default": "error" }
+      }
+    }
+  },
+  "scripts": {
+    "clean": "node -e \"const fs=require('fs'); ['dist','out'].forEach((dir)=>fs.rmSync(dir,{recursive:true,force:true})); for (const entry of fs.readdirSync('.')) { if (entry.endsWith('.vsix')) fs.rmSync(entry,{force:true}); }\"",
+    "vscode:prepublish": "npm run build",
+    "build": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --minify",
+    "watch": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --sourcemap --watch",
+    "lint": "eslint src --ext ts",
+    "package": "vsce package --no-dependencies",
+    "publish": "vsce publish --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "esbuild": "^0.28.1",
+    "eslint": "^8.56.0",
+    "rimraf": "^5.0.1",
+    "typescript": "^5.5.4",
+    "@vscode/vsce": "^3.9.2"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.24.0",
+    "@babel/traverse": "^7.24.0",
+    "@babel/types": "^7.24.0"
+  }
+}
