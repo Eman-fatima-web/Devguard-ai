@@ -3,7 +3,7 @@
   "displayName": "DevGuard AI — Code Health & Performance Guardian",
   "description": "Offline-first static analysis for HTML/CSS/JS/React/Next.js/MERN projects: dead code, broken imports, duplicate code, React performance, accessibility, SEO, and security issues — with optional AI-powered error explanations and fix suggestions.",
   "version": "0.1.1",
-  "publisher": "EmanfatimaDevguradAI",
+  "publisher": "Eman fatima",
   "repository": {
     "type": "git",
     "url": "https://github.com/Eman-fatima-web/Devguard-ai.git"
